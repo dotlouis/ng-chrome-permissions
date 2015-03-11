@@ -189,12 +189,12 @@ angular.module('ngChromePermissions',[])
                 return chrome.permissions.removeAsync({permissions: toRemove, origins: obj.origins})
                 .then(function(removed){
                     if(removed)
-                        return obj;
+                        return {permissions: toRemove, origins: obj.origins};
                     else
-                        return Promise.reject(obj);
+                        return Promise.reject({permissions: toRemove, origins: obj.origins});
                 });
             else
-                return Promise.resolve(obj);
+                return Promise.resolve({});
         }
     };
 }]);
