@@ -18,12 +18,12 @@ Basically ng-chrome-permissions is a convenient wrapper of the chrome.permission
 
 ## API
 
-- [`.contains(Object permissions)`](#contains)
-- [`.request(Object permissions)`](#request)
-- [`.remove(Object permissions)`](#remove)
+- [`.contains(Object permissions)`](#containsobject-permissions---promise)
+- [`.request(Object permissions)`](#requestobject-permissions---promise)
+- [`.remove(Object permissions)`](#removeobject-permissions---promise)
 
 The permissions Object must be constructed like the original [chrome.permission](https://developer.chrome.com/extensions/permissions) one *(for consistency)*:
-```JSON
+```
 {
     permissions: Array<String>,
     origins: Array<String>
@@ -50,13 +50,13 @@ ChromePermissions.request({permissions:['bookmarks']})
 *Note: The Async suffix of .getRecentAsync() comes from promisification. see [bluebird's API](https://github.com/petkaantonov/bluebird/blob/master/API.md#promisification) for more info*
 
 
-### `.contains(Object permissions)` -> `Promise`
+#### `.contains(Object permissions)` -> `Promise`
 
 Check each permissions/origins one by one.
 Takes an Object of permissions and/or origins.
 Returns a promise which always resolves.
 The resulting object contains the granted and/or denied permissions.
-```JSON
+```
 {
     granted:{
         permissions: Array<String>,
@@ -89,14 +89,14 @@ The resulting object contains the granted and/or denied permissions.
     })
 ```
 
-### `.request(Object permissions)` -> `Promise`
+#### `.request(Object permissions)` -> `Promise`
 
 Check each permissions one by one, then ask the user for the one which are not already granted.
 Requesting permissions prompts the user once for all requested permissions.
 Takes an Object of permissions and/or origins.
 Returns a promise which resolves if the permissions have been granted, and rejects if permissions have been denied.
 The resulting object contains the granted and/or denied permissions.
-```JSON
+```
 {
     granted:{
         permissions: Array<String>,
@@ -124,7 +124,7 @@ The resulting object contains the granted and/or denied permissions.
     })
 ```
 
-### `.remove(Object permissions)` -> `Promise`
+#### `.remove(Object permissions)` -> `Promise`
 
 Revoke given permissions. Skip the required ones.
 Takes an Object of permissions and/or origins.
