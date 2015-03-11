@@ -2,11 +2,11 @@ An AngularJS factory to manage (request, remove, check) permissions more easily
 
 # Introduction
 
-The way Chrome handles permissions is not flexible (all or nothing). This module allow to have finer control on which permissions is granted and which is denied.
+The way Chrome handles permissions is not flexible (all or nothing). This module allows to have finer control over which permission is granted and which is denied.
 
-Besides, it uses callbacks and we all know Promises are here to stay ([and for a reason](http://spion.github.io/posts/why-i-am-switching-to-promises.html)). So this module makes uses of [bluebird's Promise](https://github.com/petkaantonov/bluebird) for you to consume.
+Besides, the module makes uses of [bluebird's Promises](https://github.com/petkaantonov/bluebird) for you to consume instead of usual callbacks.
 
-Basically ng-chrome-permissions is a convenient wrapper of the chrome.permissions api.
+Basically ng-chrome-permissions is a convenient wrapper of the *chrome.permissions* api.
 
 ## Installation
 
@@ -22,7 +22,7 @@ Basically ng-chrome-permissions is a convenient wrapper of the chrome.permission
 - [`.request(Object permissions)`](#requestobject-permissions---promise)
 - [`.remove(Object permissions)`](#removeobject-permissions---promise)
 
-The permissions Object must be constructed like the original [chrome.permission](https://developer.chrome.com/extensions/permissions) one *(for consistency)*:
+The permissions Object must be constructed like the original [chrome.permission](https://developer.chrome.com/extensions/permissions#type-Permissions) one *(for consistency)*:
 ```
 {
     permissions: Array<String>,
@@ -37,7 +37,7 @@ The module handles required and optional permissions so you don't need to worry 
 
 #### Use requested APIs with Promises
 
-Once you have requested the permissions you need. The module takes care of [promisifying](https://github.com/petkaantonov/bluebird/blob/master/API.md#promisification) the corresponding chrome API. Which mean you can do something like:
+Once you have requested the permissions you need. The module takes care of [promisifying](https://github.com/petkaantonov/bluebird/blob/master/API.md#promisification) the corresponding chrome API. Which means you can do something like:
 ```Javascript
 ChromePermissions.request({permissions:['bookmarks']})
 .then(function(){
@@ -52,7 +52,7 @@ ChromePermissions.request({permissions:['bookmarks']})
 
 #### `.contains(Object permissions)` -> `Promise`
 
-Check each permissions/origins one by one.
+Checks each permissions/origins one by one.
 Takes an Object of permissions and/or origins.
 Returns a promise which always resolves.
 The resulting object contains the granted and/or denied permissions.
@@ -91,7 +91,7 @@ The resulting object contains the granted and/or denied permissions.
 
 #### `.request(Object permissions)` -> `Promise`
 
-Check each permissions one by one, then ask the user for the one which are not already granted.
+Checks each permissions one by one, then asks the user for the one which are not already granted.
 Requesting permissions prompts the user once for all requested permissions.
 Takes an Object of permissions and/or origins.
 Returns a promise which resolves if the permissions have been granted, and rejects if permissions have been denied.
@@ -126,12 +126,12 @@ The resulting object contains the granted and/or denied permissions.
 
 #### `.remove(Object permissions)` -> `Promise`
 
-Revoke given permissions. Skip the required ones.
+Revokes given permissions. Skips the required ones.
 Takes an Object of permissions and/or origins.
 Returns a promise which always (normally) resolves.
-If not, please fill an issue with the permission Object you gave in (arg), the result and the manifest permissions.
+*If not, please fill an issue with the permission Object you provided as argument, the resulting object and the manifest permissions.*
 The resulting object contains the removed permissions/origins.
-```JSON
+```
 {
     permissions: Array<String>,
     origins: Array<String>
