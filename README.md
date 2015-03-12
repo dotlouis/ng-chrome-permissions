@@ -31,6 +31,20 @@ The permissions Object must be constructed like the original [chrome.permission]
 ```
 with `permissions` and `origins` properties being optionals.
 
+The resulting object of these methods' Promise is constructed this way:
+```
+{
+    granted:{
+        permissions: Array<String>,
+        origins: Array<String>
+    },
+    denied: {
+        permissions: Array<String>,
+        origins: Array<String>
+    }
+}
+```
+
 #### Required and Optional permissions
 
 The module handles required and optional permissions so you don't need to worry about checking which permission is required and which one is optional. Just pass-in permissions and you'll get the list of granted/denied permissions.
@@ -56,18 +70,6 @@ Checks each permissions/origins one by one.
 Takes an Object of permissions and/or origins.
 Returns a promise which always resolves.
 The resulting object contains the granted and/or denied permissions.
-```
-{
-    granted:{
-        permissions: Array<String>,
-        origins: Array<String>
-    },
-    denied: {
-        permissions: Array<String>,
-        origins: Array<String>
-    }
-}
-```
 
 **Example:**
 ```Javascript
@@ -96,18 +98,6 @@ Requesting permissions prompts the user once for all requested permissions.
 Takes an Object of permissions and/or origins.
 Returns a promise which resolves if the permissions have been granted, and rejects if permissions have been denied.
 The resulting object contains the granted and/or denied permissions.
-```
-{
-    granted:{
-        permissions: Array<String>,
-        origins: Array<String>
-    },
-    denied: {
-        permissions: Array<String>,
-        origins: Array<String>
-    }
-}
-```
 
 **Example:**
 ```Javascript
@@ -130,28 +120,31 @@ Revokes given permissions. Skips the required ones.
 Takes an Object of permissions and/or origins.
 Returns a promise which always (normally) resolves.
 *If not, please fill an issue with the permission Object you provided as argument, the resulting object and the manifest permissions.*
-The resulting object contains the removed permissions/origins.
-```
-{
-    permissions: Array<String>,
-    origins: Array<String>
-}
-```
+The resulting object contains the granted and/or denied permissions.
+
+You can think of it this way:
+
+The returned denied permissions are the one that have been successfully removed,
+the granted ones are the one that have not been removed because they are required. You can see a list of optional permissions [here](https://developer.chrome.com/extensions/permissions)
+
 *Note: after removing an optional permission, requesting it again won't prompt the user. See this [issue](https://code.google.com/p/chromium/issues/detail?id=122578)*
 
 **Example:**
 ```Javascript
     ChromePermissions.remove({
-        permissions: ['downloads','browsingData']
+        permissions: ['downloads','history']
     }).then(function(permissions){
-            // depending on extension's manifest, you may have
-            // something like:
+            // permissions =
             // {
-            //     permissions: ['browsingData']
+            //     denied:{
+            //         permissions: ['history']
+            //     },
+            //     granted:{
+            //         permissions: ['downloads']
+            //     }
             // }
-            //
-            // the download permission is not in the returned
-            // object because it's not an optional permission
+            // the download permission is not denied
+            // because it's not an optional permission
             // and therefore hasn't been removed
     })
 ```

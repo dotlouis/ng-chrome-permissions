@@ -179,22 +179,49 @@ angular.module('ngChromePermissions',[])
                 return Promise.resolve();
 
             // only process optional permissions
-            var toRemove = [];
-            for(var i in obj.permissions)
+            var toRemove = [],
+                required = [];
+
+            for(var i in obj.permissions){
                 if(isOptional(obj.permissions[i]))
                     toRemove.push(obj.permissions[i]);
+                else
+                    required.push(obj.permissions[i]);
+            }
 
             // revoke permissions and origins
             if(toRemove.length > 0 || (obj.origins && obj.origins.length > 0))
                 return chrome.permissions.removeAsync({permissions: toRemove, origins: obj.origins})
                 .then(function(removed){
-                    if(removed)
-                        return {permissions: toRemove, origins: obj.origins};
+                    var result = {};
+
+                    if(removed){
+                        // the removed permissions/origins are now denied
+                        result.denied = {};
+
+                        if(toRemove && toRemove.length > 0)
+                            result.denied.permissions = toRemove;
+                        if(obj.origins && obj.origins.length > 0)
+                            result.denied.permissions = obj.origins;
+
+                        // Unremoved permissions are still granted
+                        if(required.length > 0)
+                            result.granted = {
+                                permissions: required
+                            };
+
+                        return result;
+                    }
                     else
-                        return Promise.reject({permissions: toRemove, origins: obj.origins});
+                        return Promise.reject(new Error("Unhandled try of removing a required permssion. PROVIDED: "+JSON.stringify(obj)));
                 });
+            // Unremoved permissions are still granted
             else
-                return Promise.resolve({});
+                return Promise.resolve({
+                    granted: {
+                        permissions: required
+                    }
+                });
         }
     };
 }]);
